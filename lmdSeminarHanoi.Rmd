@@ -1,0 +1,67 @@
+---
+title: "Gene expression during *O.&nbsp;sativa* panicle development"
+author: "Tom Harrop"
+date: "19 November 2015"
+output:
+  ioslides_presentation:
+    self_contained: false
+    logo: morphology.png
+    smaller: true
+    transition: "faster"
+    css: https://code.google.com/p/io-2012-slides/source/browse/theme/css/io2013.css
+---
+
+```{r setup, include=FALSE, results="hide"}
+library(ggplot2)
+theme_slide <- theme_grey() +
+  theme(plot.background = element_rect(fill = "transparent", colour = NA))
+knitr::opts_chunk$set(
+  dev.args=list(bg = "transparent"),
+  echo = FALSE
+  )
+```
+
+## {.centered .flexbox .vcenter}
+
+![lmdFigure.png](lmdFigure.png)
+
+## another attempt {.fill .nobackground}
+
+![lmdFigure.png](lmdFigure.png)
+
+## R Markdown
+
+This is an R Markdown presentation. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document^[what happens to footnotes in slides?].
+
+## Slide with Bullets
+
+- Bullet 1
+- Bullet 2
+- Bullet 3
+
+## Slide with R Code and Output
+
+```{r table1, echo=TRUE}
+getwd()
+knitr::kable(summary(cars), row.names = FALSE)
+```
+
+## Slide with Plot | subtitle {.centered}
+
+```{r plot1, fig.cap = 'My caption', fig.env = "sideways"}
+df <- data.frame(x = rnorm(10), y = rnorm(10), lab = rep(c("bof1", "bof2"),
+                                                         each = 5))
+ggplot(df, aes(x = x, y = y, colour = lab)) +
+  theme_slide +
+  geom_point() +
+  scale_color_brewer(palette = "Set1")
+```
+
+## Time for some maths {.segue .dark}
+### formula coming up
+
+## Slide with maths
+
+$\frac{1}{x}$

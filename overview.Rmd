@@ -1,0 +1,75 @@
+---
+output:
+  rmarkdown::tufte_handout:
+    dev: CairoPDF
+    keep_tex: true
+title: "Summary"
+date: "\\vspace{0 mm}"
+header-includes:
+  \usepackage{graphicx}
+  \usepackage{caption}
+  \usepackage{fixltx2e}
+  \usepackage{rotating}
+documentclass: tufte-handout
+classoption: a4paper, sfsidenotes, twoside
+
+bibliography: /home/tom/Dropbox/temp/PapersLib-2015-11-04.bibtex
+---
+
+```{r setup, include=FALSE, results="hide"}
+library(ggplot2)
+theme_slide <- theme_minimal() +
+  theme(plot.background = element_rect(fill = "transparent", colour = NA))
+knitr::opts_chunk$set(
+  dev.args=list(bg = "transparent"),
+  echo = FALSE,
+  tidy.opts = list(width.cutoff = 32)
+  )
+```
+
+# Introduction
+
+* Relationship between rice yield and branching complexity
+* Relationship between meristem activity / determinancy and branching complexity [@Ren:2013jv]
+* Relationship between gene expression and meristem identity
+* **Figure**: panicle morphology during development
+\begin{marginfigure}
+  \includegraphics{morphology.png}
+\end {marginfigure}
+
+# Background
+
+* LMD and RNAseq methodology
+    * why LMD was chosen
+    * how RNAseq works
+    * problems with small amounts of starting material
+
+# Results figures^[How to source `figures.R` and resize without all the data?]
+
+* LMD figure
+    * amount of RNA produced
+* clusters?
+* transcription factor examples
+    * ALOG family
+    * HB?
+* hormone example(s)?
+    * cytokinin
+
+\begin{marginfigure}
+  \includegraphics{lmdFigure.pdf}
+\end {marginfigure}
+\begin{marginfigure}
+  \includegraphics{/media/tom/cfd04a45-d8e3-4944-a080-6cfef1543df8/home/tom/Documents/writing/lmdPaper/figures/f_mfuzzClusters-1.pdf}
+\end {marginfigure}
+
+# Code in tufte-handout
+```{r plot1, echo = TRUE, fig.margin = TRUE}
+df <- data.frame(x = rnorm(10), y = rnorm(10), lab = rep(c("bof1", "bof2"),
+                                                         each = 5))
+ggplot(df, aes(x = x, y = y, colour = lab)) +
+  theme_slide +
+  geom_point() +
+  scale_color_brewer(palette = "Set1")
+```
+
+# References
