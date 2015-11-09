@@ -1,0 +1,12 @@
+---
+title: "Gene expression in rice panicle meristems"
+output: word_document
+---
+
+Tom Harrop
+
+Institut de Recherche pour le Développement, 911 Avenue Agropolis, 34394 Montpellier, France
+
+Rice yield is influenced by a range of genetic and environmental factors, and is directly dependent on branching of the inflorescence, which in turn depends on the activity of different types of meristems during development. Some undifferentiated cells in the primary axis (the rachis meristem) differentiate into branch meristems, which form primary and higher-order branches, and produce spikelet meristems that differentiate into floret meristems. After spikelet differentiation, the branching complexity is fixed.
+
+Some progress has been made to identify individual genes, quantitative trait loci and interactions that 
