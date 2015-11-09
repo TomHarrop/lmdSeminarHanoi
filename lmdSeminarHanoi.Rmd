@@ -4,30 +4,45 @@ author: "Tom Harrop"
 date: "19 November 2015"
 output:
   ioslides_presentation:
+    logo: images/elements_graphiques_IRD/elements_graphiques_IRD/logo-cyan-IRD_1500.png
     self_contained: false
-    logo: morphology.png
     smaller: true
     transition: "faster"
-    css: https://code.google.com/p/io-2012-slides/source/browse/theme/css/io2013.css
 ---
 
 ```{r setup, include=FALSE, results="hide"}
 library(ggplot2)
-theme_slide <- theme_grey() +
+library(data.table)
+theme_slide <- theme_grey(base_size = 16, base_family = "Lato") +
   theme(plot.background = element_rect(fill = "transparent", colour = NA))
 knitr::opts_chunk$set(
-  dev.args=list(bg = "transparent"),
+  dev.args=list(bg = "transparent", family = "Lato"),
   echo = FALSE
   )
+source("src/figures.R")
+source("src/facetAdjust.R")
 ```
 
-## {.centered .flexbox .vcenter}
+## Some introduction slides
 
-![lmdFigure.png](lmdFigure.png)
+</article></slide><slide class="fill nobackground" style="background-image: url(images/morphology.png); background-size: contain; background-position: center"><hgroup><h2>Panicle morphology</h2></hgroup><article>
 
-## another attempt {.fill .nobackground}
+## Some more introduction slides
 
-![lmdFigure.png](lmdFigure.png)
+</article></slide><slide class="fill nobackground" style="background-image: url(images/lmdFigure.png); background-size: contain; background-position: center"><article>
+
+## Patterns of gene expression {.centered}
+
+```{r mfuzz, fig.width = 8}
+print(mfuzz)
+```
+
+## Enrichment of TF genes {.centered}
+
+```{r f_gsea}
+print(f_gsea)
+```
+
 
 ## R Markdown
 
@@ -44,13 +59,12 @@ When you click the **Knit** button a document will be generated that includes bo
 ## Slide with R Code and Output
 
 ```{r table1, echo=TRUE}
-getwd()
 knitr::kable(summary(cars), row.names = FALSE)
 ```
 
-## Slide with Plot | subtitle {.centered}
+## Slide with Plot | So results... wow! {.centered}
 
-```{r plot1, fig.cap = 'My caption', fig.env = "sideways"}
+```{r plot1}
 df <- data.frame(x = rnorm(10), y = rnorm(10), lab = rep(c("bof1", "bof2"),
                                                          each = 5))
 ggplot(df, aes(x = x, y = y, colour = lab)) +
@@ -59,8 +73,7 @@ ggplot(df, aes(x = x, y = y, colour = lab)) +
   scale_color_brewer(palette = "Set1")
 ```
 
-## Time for some maths {.segue .dark}
-### formula coming up
+# Time for some maths | formula coming up
 
 ## Slide with maths
 

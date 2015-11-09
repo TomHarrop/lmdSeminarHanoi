@@ -30,8 +30,9 @@ knitr::opts_chunk$set(
 # Introduction
 
 * Relationship between rice yield and branching complexity
-* Relationship between meristem activity / determinancy and branching complexity [@Ren:2013jv]
+* Relationship between meristem activity / determinancy and branching complexity
 * Relationship between gene expression and meristem identity
+* Why is control of morphology complex (redundancy, dynamics)? An example to illustrate this.
 * **Figure**: panicle morphology during development
 \begin{marginfigure}
   \includegraphics{morphology.png}
@@ -61,6 +62,16 @@ knitr::opts_chunk$set(
 \begin{marginfigure}
   \includegraphics{/media/tom/cfd04a45-d8e3-4944-a080-6cfef1543df8/home/tom/Documents/writing/lmdPaper/figures/f_mfuzzClusters-1.pdf}
 \end {marginfigure}
+
+# Discussion
+
+* modes of expression in meristems:
+    * apical vs. axillary
+    * transitions in axillary meristems
+* characteristics of the different cell types?
+* dynamical networks of genes controlling expression (how this specifies the cell types)
+* variety in panicle phenotypes in different accessions
+* how did the network 
 
 # Code in tufte-handout
 ```{r plot1, echo = TRUE, fig.margin = TRUE}

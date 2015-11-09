@@ -1,12 +1,15 @@
 ---
-title: "Gene expression in rice panicle meristems"
-output: word_document
+title: "Gene expression during *O.\ sativa* panicle development"
+output:
+  word_document:
+    reference_docx: templates/wordStyles.docx
 ---
 
-Tom Harrop
+**Tom Harrop**[^1], Israr Ud Din[^2], Veronica Gregis^2^, Michela Osnato^2^, Stefan Jouannic^1^, Hélène Adam^1^ and Martin Kater^2^
 
-Institut de Recherche pour le Développement, 911 Avenue Agropolis, 34394 Montpellier, France
+[^1]: Institut de Recherche pour le Développement, 911 Avenue Agropolis, 34394 Montpellier, France.
+[^2]: Università degli Studi di Milano, Via Celoria 26, 20133 Milano, Italy.
 
-Rice yield is influenced by a range of genetic and environmental factors, and is directly dependent on branching of the inflorescence, which in turn depends on the activity of different types of meristems during development. Some undifferentiated cells in the primary axis (the rachis meristem) differentiate into branch meristems, which form primary and higher-order branches, and produce spikelet meristems that differentiate into floret meristems. After spikelet differentiation, the branching complexity is fixed.
+Rice yield is influenced by a range of genetic and environmental factors, and depends on the complexity of branching of the inflorescence. After induction of reproductive development, some cells in the primary axis (the rachis meristem) differentiate into branch meristems, which form primary and higher-order branches and produce spikelet meristems that differentiate into florets. Branching complexity is specified by the activity of the different meristems. Some progress towards understanding this process has been made at the level of individual genes, QTLs and interactions that influence the transitions between meristem identities, but regulation is likely to be complex, and a broader view is required to understand the effect of gene expression on yield.
 
-Some progress has been made to identify individual genes, quantitative trait loci and interactions that 
+We are studying this in *Oryza sativa* ssp. *japonica* cv. Nipponbare using a sensitive laser microdissection and RNA sequencing approach. A switch in expression between apical and axillary meristems is evident, followed by more subtle changes during transitions in axillary meristem identity, and expression of transcription factor families and genes related to hormone signalling implies that they are involved. These results will be used to investigate the dynamics of the gene regulatory network controlling inflorescence development in *O. sativa* and the evolution of that network during the domestication and diversification of Asian and African rice.
