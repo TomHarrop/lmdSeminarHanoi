@@ -1,207 +1,56 @@
+theme_slide <- theme_grey(base_size = 16, base_family = "Lato") +
+  theme(plot.background = element_rect(fill = "transparent", colour = NA))
 
 ###################
-### STATS TABLE ###
+### PHENOTYPING ###
 ###################
 
-st_libStats <- readRDS('output/quantStats/libStats.Rds')
+rawData <- data.table(read.csv('data/Phenotype_Panicle_corrected.csv',
+                              stringsAsFactors = FALSE))
 
-################
-### PCA PLOT ###
-################
+# remove "Echelle" row
+rawData <- rawData[!grep("Echelle", file_name)]
 
-expressedGenes <- readRDS('output/expressedGenes/expressedGenesAll.Rds')
-vst <- readRDS('output/DESeq2/vstAll.Rds')
+rawData[, Accession := unlist(strsplit(file_name, split = "_", fixed = TRUE))[1], by = file_name]
+rawData[, Species := plyr::revalue(toupper(Accession),
+                        c(B88 = "O. barthii", IR64 = "O. sativa indica",
+                          NIP = "O. sativa japonica", TOG5681 = "O. glaberrima",
+                          W1654 = "O. rufipogon")),
+        by = Accession]
+rawData[Accession == "tog5681", Accession := "Tog5681"]
+rawData[, Indiv := unlist(strsplit(file_name, split = "_", fixed = TRUE))[2], by = file_name]
+rawData[, Panicle := unlist(strsplit(file_name, split = "_", fixed = TRUE))[3], by = file_name]
 
-exprVst <- GenomicRanges::assay(vst)[expressedGenes,]
-exprVst <- GenomicRanges::assay(vst)
-pca <- prcomp(t(exprVst))
-percentVar <- pca$sdev^2/sum(pca$sdev^2)
+setkey(rawData, "Species", "Indiv", "Panicle")
+pd <- unique(rawData[, .(Species, Indiv, Panicle, TA_nb, Sp_nb)])
+ptypes <- ggplot(pd, aes(x = TA_nb, y = Sp_nb)) +
+  theme_slide +
+  theme(legend.text = element_text(face = "italic")) +
+  geom_smooth(method = lm, se = FALSE, colour = "black", size = 1, alpha = 0.5) +
+  geom_point(aes(colour = Species), size = 3, alpha = 0.8) +
+  scale_color_brewer(palette = "Set1", guide = guide_legend(title = NULL)) +
+  ylab("Number of spikelets") + xlab("Number of secondary branches")
 
-pcaPlotData <- data.frame(
-  label = toupper(rownames(pca$x)),
-  PCA1 = pca$x[,1],
-  PCA2 = pca$x[,2],
-  Stage = GenomicRanges::colData(vst)$stage
-)
 
-# row index to help with overplotted labels
-pcaPlotData$rIdx <- 1:dim(pcaPlotData)[1]
-opIdx <- pcaPlotData[c('n2r3', 'n4r1'),'rIdx']
+rd2 <- as.data.table(read.table("data/OsOgObOrPTRAPdata.txt",
+                                sep = "\t",
+                                header = TRUE,
+                                stringsAsFactors = FALSE,
+                                dec = ","))
 
-# format legend
-pcaPlotData$Stage <- plyr::mapvalues(pcaPlotData$Stage, from = "ePBM/SBM",
-                                     to = "ePBM/\nSBM")
+rd2[, Species := plyr::revalue(Origin, c(Ob = "O. barthii", Os = "O. sativa",
+                                     Og = "O. glaberrima", Or = "O. rufipogon"))]
 
-sf_pca <- ggplot(data = pcaPlotData,
-                 aes(x = PCA1, y = PCA2, colour = Stage, label = label)) +
-  theme_minimal(base_size = 8, base_family = "Helvetica") +
-  scale_colour_brewer(palette = "Set1", name = 'Stage') +
-  guides(colour=guide_legend(title=NULL)) +
-  scale_fill_brewer(palette = "Set1", guide = FALSE) +
-  xlab(paste0("PC1: ", round(percentVar[1] * 100), "% variance")) +
-  ylab(paste0("PC2: ", round(percentVar[2] * 100), "% variance")) +
-  xlim(-50, 77) +
-  geom_point(shape = 16, size = 2, alpha = 0.7) +
-  geom_text(data = pcaPlotData[-opIdx,], size = 2,
-            hjust = 1.2, show.legend = FALSE) +
-  geom_text(data = pcaPlotData[opIdx,], size = 2,
-            hjust = -0.2, show.legend = FALSE)
+setkey(rd2, "Species", "Bar_Code", "Sowing_nb", "Repet_nb", "Plant_nb", "Panicle_nb")
 
-#######################
-### COMPARE IN SITU ###
-#######################
-
-compare <- readRDS('output/compare/compare.Rds')
-setkey(compare, "zhangRef")
-
-# convert zhangRef to citekey (these papers were mined from zhang paper manually)
-citekeys <- structure(c("@Ikeda:2007ja", "@Li:2011es", "@Ren:2013jv", "@Suzaki:2004ib", 
-                        "@Chu:2006fw", "@Lee:2012hj", "@Yoshida:2013ff", "@Xue:2008ki", 
-                        "@Ashikari:2005eg", "@Yan:2011hw", "@Li:2013iq", "@Yoshida:2012fg", 
-                        "@Kurakawa:2007go", "@Lee:2012hj", "@Lee:2007cj", "@Gao:2010iz", 
-                        "@IkedaKawakatsu:2012co", "@Horigome:2009gt", "@Lee:2007cj", 
-                        "@Jiao:2010ft", "@Miura:2010it", "@Huang:2009kf", "@Kobayashi:2010hn", 
-                        "@Komatsu:2003iu", "@Li:2010ks", "@Oikawa:2009cs", "@Tabuchi:2011gx", 
-                        "@Zhu:2010je", "@LopezDee:1999ds", "@Yadav:2007im", "@Nagasawa:2003gu", 
-                        "@Yun:2013id", "@Duan:2012bt", "@Ohmori:2009kj", "@Dreni:2007jd", 
-                        "@Cui:2010kt", "@Fornara:2004bi", "**m.Komatsu2009**"),
-                      .Names = c("56", 
-                                 "85", "118", "129", "21", "82", "154", "148", "3", "150", "86", 
-                                 "153", "78", "82", "83", "48", "59", "54", "83", "68", "100", 
-                                 "55", "73", "75", "84", "108", "131", "165", "991", "992", "993", 
-                                 "994", "995", "996", "997", "998", "999", "990"))
-
-compare[, Reference := citekeys[as.character(zhangRef)]]
-
-# SI table
-st_reviewInSitu <- data.table(reshape2::dcast(compare, msuId + Reference ~ stage,
-                                              value.var = 'compare'))
-
-# deal with genes that have the same expression pattern in >1 report
-st_reviewInSitu <- st_reviewInSitu[, .(
-  Reference = paste(Reference, collapse = ", "))
-  , by = c("msuId", "RM", "PBM", "SBM", "SM", "FM")]
-
-st_reviewInSitu[, `Gene symbol` :=
-                  oryzr::LocToGeneName(msuId)$symbols,
-                by = msuId]
-setnames(st_reviewInSitu, old = "msuId", new = "MSU identifier")
-setcolorder(st_reviewInSitu, neworder =
-              c('Gene symbol', 'MSU identifier', 'RM', 'PBM', 'SBM', 'SM', 'FM',
-                'Reference'))
-setkey(st_reviewInSitu, "Gene symbol")
-
-# get long tpm data with stage
-tpm.wide <- data.table(readRDS('output/tpm/tpm.Rds'), keep.rownames = TRUE)
-setnames(tpm.wide, 'rn', "MSU identifier")
-tpm <- reshape2::melt(tpm.wide, id.vars = "MSU identifier",
-                      variable.name = "library", value.name = "tpm")
-colData <- data.table(as.data.frame(GenomicRanges::colData(
-  readRDS('output/DESeq2/ddsLrt.Rds'))), keep.rownames = TRUE)
-tpm[, stage := colData[rn %in% as.character(library), stage], by = library]
-
-setkey(tpm, "MSU identifier", "stage")
-
-# merge tpm data with compare calls
-genes <- compare[, .(msuId, stage, call.z)]
-setkey(genes, "msuId", "stage")
-genes <- unique(genes)
-genes[, stage := plyr::mapvalues(stage, "SBM", "ePBM/SBM")]
-
-# dirty kludge, fix in compareVsInSitu.R
-genes <- genes[!stage == "FM"]
-setkey(genes, "msuId", "stage")
-
-genTpm <- tpm[genes, .(
-  msuId = `MSU identifier`,
-  library,
-  stage,
-  call.z,
-  tpm
-)]
-
-# add call per library
-expGenTT.wide <- data.table(readRDS('output/expressedGenes/expGenTT.Rds'), key = "id")
-expGenTT <- reshape2::melt(expGenTT.wide, id.vars = "id",
-                           variable.name = "library", value.name = "isExpr")
-setkey(expGenTT, "id", "library")
-setkey(genTpm, "msuId", "library")
-
-genTpm <- expGenTT[genTpm]
-setnames(genTpm, "id", "msuId")
-
-# add replicate number to colour points
-genTpm[, Replicate := sub(".*(\\d+)", "\\1", library)]
-
-# format gene name and stage for the plot
-genTpm[, name := oryzr::LocToGeneName(msuId)$symbols, by = msuId]
-genTpm[, plotLabel := name]
-genTpm[!is.na(plotLabel), plotLabel := paste(plotLabel, "·", msuId)]
-genTpm[is.na(plotLabel), plotLabel := msuId]
-genTpm[, stage := plyr::mapvalues(stage, "ePBM/SBM", "ePBM/\nSBM")]
-
-# order the plots
-setkey(genTpm, "name")
-genTpm[, plotLabel := factor(plotLabel, levels = unique(plotLabel))]
-
-# add coordinates for shading
-genTpm[, c("xmin", "xmax") := .(
-  as.numeric(substr(library, 2, 2)) - 0.2,
-  as.numeric(substr(library, 2, 2)) + 0.2) ]
-
-# draw it
-setkey(genTpm, "plotLabel", "stage")
-# sf_isGenesTpm <- ggplot(genTpm, aes(x = stage, y = tpm, colour = Replicate, shape = isExpr)) +
-#   theme_minimal(base_size = 8, base_family = "Helvetica") +
-#   theme(strip.text = element_text(face = "italic")) +
-#   xlab(NULL) +
-#   scale_color_brewer(palette = "Set1") +
-#   guides(shape = FALSE, size = FALSE) +
-#   geom_rect(aes(xmin = xmin, xmax = xmax, ymin = -Inf, ymax = Inf),
-#             unique(genTpm[call.z == TRUE,]), colour = NA,  fill = "grey90", alpha = 0.75) +
-#   stat_smooth(aes(group = plotLabel), method = "loess", se = FALSE, colour = "grey", size = 0.5) + 
-#   geom_point(size = 1, alpha = 0.8, position = position_jitter(width = 0.2)) +
-#   facet_wrap(~ plotLabel, scales = "free_y", ncol = 4)
-
-# keep a subset of genes
-keep <- c("LOC_Os06g45460", "LOC_Os09g26999", "LOC_Os07g42410", "LOC_Os07g47330",
-          "LOC_Os10g33780", "LOC_Os03g60430", "LOC_Os01g61480", "LOC_Os03g11614",
-          "LOC_Os01g40630", "LOC_Os04g49150", "LOC_Os07g41370", "LOC_Os02g52340",
-          "LOC_Os09g32948", "LOC_Os06g11330", "LOC_Os08g41950", "LOC_Os02g45770",
-          "LOC_Os03g51690", "LOC_Os03g54170", "LOC_Os04g51000", "LOC_Os07g13170",
-          "LOC_Os08g39890")
-
-genTpm <- genTpm[msuId %in% keep]
-
-refTable <- compare[, .(msuId, plotLabel, Reference)]
-refTable <- refTable[msuId %in% keep]
-setkey(refTable, "msuId", "Reference")
-refTable <- unique(refTable)
-refTable[, Reference := paste(unlist(Reference), collapse = ", "), by = msuId]
-# refTable[, Reference := paste0("\\cite{", paste(Reference, collapse = ","), "}"), by = msuId]
-# refTable <- unique(refTable)
-# refTable[, Reference := gsub("@", "", Reference, fixed = TRUE)]
-setkey(refTable, "plotLabel")
-st_refTable <- unique(refTable)
-setnames(st_refTable, c("msuId", "plotLabel"), c("MSU name", "CSGNL symbol"))
-
-sf_isGenesTpm <- ggplot() +
-  theme_minimal(base_size = 8, base_family = "Helvetica") +
-  theme(strip.text = element_text(face = "italic")) +
-  xlab(NULL) +
-  scale_color_brewer(palette = "Set1") +
-  guides(shape = FALSE, size = FALSE) +
-  geom_blank(mapping = aes(x = stage, y = tpm), data = genTpm) +
-  geom_rect(mapping = aes(xmin = xmin, xmax = xmax, ymin = -Inf, ymax = Inf),
-            data = unique(genTpm[call.z == TRUE,]),
-            colour = NA,  fill = "grey90") +
-  stat_smooth(mapping = aes(x = stage, y = tpm, group = plotLabel),
-              data = genTpm,
-              method = "loess", se = FALSE, colour = "black", size = 0.25, alpha = 0.6) + 
-  geom_point(mapping = aes(x = stage, y = tpm, colour = Replicate, shape = isExpr),
-             data = genTpm,
-             size = 1, alpha = 0.6) +
-  facet_wrap(~ plotLabel, scales = "free_y", ncol = 2)
+pd2 <- unique(rd2[, .(Species, Bar_Code, Sowing_nb, Repet_nb, Plant_nb, Panicle_nb, Sp_nb, TA_nb)])
+ptypes2 <- ggplot(pd2, aes(x = TA_nb, y = Sp_nb)) +
+  theme_slide +
+  theme(legend.text = element_text(face = "italic")) +
+  geom_point(aes(fill = Species), colour = NA, size = 3, alpha = 0.6, shape = 21) +
+  scale_fill_brewer(palette = "Set1", guide = guide_legend(title = NULL)) +
+  geom_smooth(method = lm, se = FALSE, colour = "black", size = 0.5) +
+  ylab("Number of spikelets") + xlab("Number of secondary branches")
 
 
 #############
@@ -291,42 +140,13 @@ centres[, Stage := plyr::mapvalues(Stage, "ePBM.SBM", "ePBM/SBM")]
 mfuzz <- ggplot(plotData,
                 aes(x = Stage, y = `Scaled, transformed read counts`,
                     colour = Membership, group = id)) +
+  theme_slide +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
   xlab(NULL) +
   scale_colour_gradientn(colours = heatscale, limits = c(0, 1), breaks = seq(0, 1, 0.2)) +
   geom_line(alpha = 0.8) +
   geom_line(data = centres, mapping = aes(group = 1), colour = "black", alpha = 0.5) +
   facet_wrap("label", ncol = 4)
-
-# centroid dis vs. c (for SI)
-centroids <- readRDS('output/mfuzz/centroids.Rds')
-sf_mfuzzCentroids <- ggplot(centroids, aes(x = x, y = y)) +
-  theme_minimal(base_size = 8, base_family = "Helvetica") +
-  theme(plot.title = element_text(hjust = 0, face = "bold"),
-        plot.background = element_rect(colour = "black", size = 0.25)) +
-  xlab(expression(Cluster~number~"("*italic(c)*")")) +
-  ylab("Minimum centroid distance") +
-  ggtitle("a") +
-  stat_smooth(method = loess, se = FALSE, size = 0.5) +
-  geom_point(size = 1, alpha = 0.5)
-
-# MDS for SI
-vg.mds <- readRDS('output/mfuzz/vg.mds.Rds')
-sf_mfuzzPca <- ggplot(vg.mds, aes(x = MDS1, y=MDS2, colour = factor(cluster))) +
-  theme_minimal(base_size = 8, base_family = "Helvetica") +
-  theme(legend.key.size = grid::unit(8, "point"),
-        plot.title = element_text(hjust = 0, face = "bold"),
-        plot.background = element_rect(colour = "black", size = 0.25)) +
-  #coord_fixed(ratio = 1) +
-  ggtitle("b") +
-  geom_point(aes(size=max.membership),alpha=0.5, shape = 16) +
-  scale_colour_brewer(palette = "Set1", name = "Cluster") +
-  scale_size_area(guide = FALSE, max_size = 1)
-
-sf_mfuzzPcaCentroids <- gridExtra::arrangeGrob(
-  sf_mfuzzCentroids,
-  sf_mfuzzPca,
-  padding = unit(0, "lines"), ncol = 1)
 
 #################
 ### HYPERGEOM ###
@@ -371,6 +191,7 @@ heatscale <- rev(RColorBrewer::brewer.pal(6, "RdBu"))
 
 f_gsea <- ggplot(gsea, aes(x = Stage, y = rn, label = padj, fill = `Test\nstatistic`)) +
   xlab(NULL) + ylab(NULL) +
+  theme_slide +
   theme(axis.text.x = element_text(vjust = 0.5)) +
   scale_y_discrete(expand = c(0,0)) +
   scale_x_discrete(expand = c(0,0)) +
@@ -381,6 +202,8 @@ if (gsea[,any(showPval)]){
   f_gsea <- f_gsea + geom_text(data = gsea[which(showPval),], size = 2)
 }
 
+
+
 ############
 ### ALOG ###
 ############
@@ -389,6 +212,8 @@ if (gsea[,any(showPval)]){
 # HDZIP3 <- c('LOC_Os01g48170', 'LOC_Os03g01890', 'LOC_Os03g43930', 'LOC_Os05g48820', 'LOC_Os06g39906', 'LOC_Os10g33960', 'LOC_Os12g41860')
 # 
 # expTable <- data.table(msuId = HDZIP3, type = 'hb')
+
+library(ggtree)
 
 svpMads <- c("LOC_Os02g52340", "LOC_Os03g08754", "LOC_Os06g11330")
 expG1s <- c("LOC_Os02g07030", "LOC_Os06g46030", "LOC_Os10g33780")
@@ -481,7 +306,7 @@ sf_madsTree <- ggtree::ggtree(njTree, aes(x = x, y = y, label = label), size = 0
   theme_minimal(base_size = 8, base_family = "Helvetica") +
   theme(axis.text = element_blank(),
         panel.grid = element_blank(),
-        legend.key.size = unit(8, "point"),
+        legend.key.size = grid::unit(8, "point"),
         legend.text = element_text(size = 4),
         legend.title = element_text(size = 5),
         legend.position = c(0,0.5),
@@ -496,8 +321,8 @@ sf_madsTree <- sf_madsTree +
              hjust = "left",
              size = 1.5,
              colour = NA,
-             label.padding = unit(0.05, "lines"),
-             label.r = unit(0.05, "lines")) +
+             label.padding = grid::unit(0.05, "lines"),
+             label.r = grid::unit(0.05, "lines")) +
   ggplot2::geom_text(size= 1.5, na.rm = TRUE, hjust = -0.01)
 
 # annotate clades
@@ -544,8 +369,6 @@ sf_madsTree <- ggtree::annotation_clade(sf_madsTree, node = 211, "GGM13-like",
 #   ggplot2::geom_text(mapping = aes(x = branch, label = node), vjust = -0.3, size = 2)
 # 
 # dev.off()
-
-detach("package:ggtree", unload=TRUE)
 
 ################
 ### HOMEOBOX ###

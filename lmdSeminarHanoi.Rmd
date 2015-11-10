@@ -1,29 +1,66 @@
 ---
 title: "Gene expression during *O.&nbsp;sativa* panicle development"
-author: "Tom Harrop"
+author: "Tom Harrop<br>thomas.harrop@ird.fr<br>"
 date: "19 November 2015"
+email: 
 output:
   ioslides_presentation:
-    logo: images/elements_graphiques_IRD/elements_graphiques_IRD/logo-cyan-IRD_1500.png
+    logo: images/logoIRD.png
     self_contained: false
     smaller: true
     transition: "faster"
+    widescreen: true
+    css: templates/source2.css
+    fig_width: 9
 ---
 
 ```{r setup, include=FALSE, results="hide"}
 library(ggplot2)
 library(data.table)
+library(grid)
 theme_slide <- theme_grey(base_size = 16, base_family = "Lato") +
   theme(plot.background = element_rect(fill = "transparent", colour = NA))
 knitr::opts_chunk$set(
   dev.args=list(bg = "transparent", family = "Lato"),
-  echo = FALSE
+  echo = FALSE,
+  message = FALSE
   )
 source("src/figures.R")
-source("src/facetAdjust.R")
 ```
 
-## Some introduction slides
+## Yield depends on panicle morphology | Figure of different panicle types
+
+## Yield depends on panicle morphology | diagram of primary/secondary branches
+
+## Yield is related to branching complexity {.center .flexbox .vcenter}
+
+```{r ptypes}
+print(ptypes)
+```
+
+<footer class="source2">H&eacute;l&egrave;ne Adam</footer>
+
+## Yield is related to branching complexity {.center .flexbox .vcenter}
+
+```{r ptypes2}
+print(ptypes2)
+```
+
+<footer class="source2">H&eacute;l&egrave;ne Adam</footer>
+
+## Branching depends on meristem activity
+
+```{r f1}
+ggplot2::qplot(rnorm(10), rnorm(10)) + theme_slide
+```
+
+## Branching depends on meristem activity
+
+```{r f2}
+ggplot2::qplot(rnorm(1000)) + theme_slide
+```
+
+## Gene expression specifies meristem identity
 
 </article></slide><slide class="fill nobackground" style="background-image: url(images/morphology.png); background-size: contain; background-position: center"><hgroup><h2>Panicle morphology</h2></hgroup><article>
 
@@ -31,13 +68,60 @@ source("src/facetAdjust.R")
 
 </article></slide><slide class="fill nobackground" style="background-image: url(images/lmdFigure.png); background-size: contain; background-position: center"><article>
 
-## Patterns of gene expression {.centered}
+# Alternative image insertions
 
-```{r mfuzz, fig.width = 8}
+## Morphology (LMD) 2 {.centered}
+
+```{r morph2}
+myimg <- png::readPNG("images/N1.png")
+myplot <- ggplot2::qplot(rnorm(100))
+
+# set viewport
+grid.newpage()
+pushViewport(grid::viewport(layout = grid::grid.layout(2, 2)))
+
+# print
+print(myplot, vp = viewport(layout.pos.col = 1, layout.pos.row = 1))
+grid.raster(myimg, vp = viewport(layout.pos.col = 1, layout.pos.row = 2))
+print(myplot, vp = viewport(layout.pos.col = 2, layout.pos.row = 2))
+grid.raster(myimg, vp = viewport(layout.pos.col = 2, layout.pos.row = 1))
+```
+
+<footer class="source2">Microscopy by...</footer>
+
+## Laser microdissection (LMD) 2 {.center .flexbox .vcenter}
+
+```{r lmd2}
+img <- png::readPNG("images/lmdFigure.png")
+grid::grid.raster(img)
+```
+
+<footer class="source2">Microscopy by...</footer>
+
+## Laser microdissection (LMD) 3 {.center .flexbox .vcenter}
+
+<div style="width:700px; height=900px">
+![lmdFigure.png]("images/lmdFigure.png")
+</div>
+
+<footer class="source2">Microscopy</footer>
+
+## Coexpression of related genes {.centered .vcenter}
+
+```{r mfuzz}
 print(mfuzz)
 ```
 
-## Enrichment of TF genes {.centered}
+## Coexpression of TFs | **Just one or two interesting ones**
+
+```{r hyperg}
+keep <- grep("\\*n\\*", names(t_hypergeom), value = TRUE)
+hyperg <- t_hypergeom[, keep]
+setnames(hyperg, names(hyperg), gsub("[[:space:]]\\*n\\*", "", names(hyperg)))
+knitr::kable(hyperg)
+```
+
+## Expression of TF genes {.centered}
 
 ```{r f_gsea}
 print(f_gsea)
@@ -73,8 +157,15 @@ ggplot(df, aes(x = x, y = y, colour = lab)) +
   scale_color_brewer(palette = "Set1")
 ```
 
+<footer class="source2">Data: Bob Log III</footer>
+
 # Time for some maths | formula coming up
 
 ## Slide with maths
 
 $\frac{1}{x}$
+
+# | Acknowledgements
+
+* a name (what they did)
+* another name (more experiments)
