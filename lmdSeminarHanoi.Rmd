@@ -5,13 +5,13 @@ date: "19 November 2015"
 email: 
 output:
   ioslides_presentation:
-    logo: images/logoIRD.png
-    self_contained: false
+    logo: images/logoird-01.png
+    self_contained: true
     smaller: true
     transition: "faster"
     widescreen: true
     css: templates/source2.css
-    fig_width: 9
+    fig_width: 9.16
 ---
 
 ```{r setup, include=FALSE, results="hide"}
@@ -19,26 +19,38 @@ library(ggplot2)
 library(data.table)
 library(grid)
 theme_slide <- theme_grey(base_size = 16, base_family = "Lato") +
-  theme(plot.background = element_rect(fill = "transparent", colour = NA))
+  theme(plot.background = element_rect(fill = "transparent", colour = NA),
+        legend.background = element_rect(fill = "transparent", colour = NA))
 knitr::opts_chunk$set(
   dev.args=list(bg = "transparent", family = "Lato"),
   echo = FALSE,
-  message = FALSE
+  message = FALSE,
+  warning = FALSE
   )
 source("src/figures.R")
 ```
 
-## Yield depends on panicle morphology | Figure of different panicle types
+## The *EvoRepRice* project
 
-## Yield depends on panicle morphology | diagram of primary/secondary branches
-
-## Yield is related to branching complexity {.center .flexbox .vcenter}
-
-```{r ptypes}
-print(ptypes)
+```{r err}
+myimg <- png::readPNG("images/err.png")
+grid.raster(myimg)
 ```
 
-<footer class="source2">H&eacute;l&egrave;ne Adam</footer>
+## Overview | Genes that regulate panicle development
+
+* Understand how changes in gene expression specify different meristem types
+* Laser microdissection and RNA sequencing in *O. sativa* ssp. *japonica* cv. Nipponbare 
+*
+
+## Diversity of panicle architecture
+
+```{r diversity}
+myimg <- png::readPNG("images/diversity.png")
+grid.raster(myimg)
+```
+
+<footer class="source2">H&eacute;l&egrave;ne Adam; Ikeda <em>et al</em>., 2004 (Breeding science)</footer>
 
 ## Yield is related to branching complexity {.center .flexbox .vcenter}
 
@@ -48,63 +60,171 @@ print(ptypes2)
 
 <footer class="source2">H&eacute;l&egrave;ne Adam</footer>
 
-## Branching depends on meristem activity
+## Meristem transitions {.centered .vcenter}
 
-```{r f1}
-ggplot2::qplot(rnorm(10), rnorm(10)) + theme_slide
+```{r n1}
+N1 <- png::readPNG("images/N1r.png")
+grid.raster(N1)
 ```
 
-## Branching depends on meristem activity
+<footer class="source2">H&eacute;l&egrave;ne Adam and Israr Ud Din</footer>
 
-```{r f2}
-ggplot2::qplot(rnorm(1000)) + theme_slide
+## Meristem transitions {.centered .vcenter}
+
+```{r n2}
+N2 <- png::readPNG("images/N2-1.png")
+grid.raster(N2, vp = viewport(layout.pos.col = 2, layout.pos.row = 1))
 ```
 
-## Gene expression specifies meristem identity
+<footer class="source2">H&eacute;l&egrave;ne Adam and Israr Ud Din</footer>
 
-</article></slide><slide class="fill nobackground" style="background-image: url(images/morphology.png); background-size: contain; background-position: center"><hgroup><h2>Panicle morphology</h2></hgroup><article>
+## Meristem transitions {.centered .vcenter}
 
-## Some more introduction slides
-
-</article></slide><slide class="fill nobackground" style="background-image: url(images/lmdFigure.png); background-size: contain; background-position: center"><article>
-
-# Alternative image insertions
-
-## Morphology (LMD) 2 {.centered}
-
-```{r morph2}
-myimg <- png::readPNG("images/N1.png")
-myplot <- ggplot2::qplot(rnorm(100))
-
-# set viewport
-grid.newpage()
-pushViewport(grid::viewport(layout = grid::grid.layout(2, 2)))
-
-# print
-print(myplot, vp = viewport(layout.pos.col = 1, layout.pos.row = 1))
-grid.raster(myimg, vp = viewport(layout.pos.col = 1, layout.pos.row = 2))
-print(myplot, vp = viewport(layout.pos.col = 2, layout.pos.row = 2))
-grid.raster(myimg, vp = viewport(layout.pos.col = 2, layout.pos.row = 1))
+```{r n3}
+N3 <- png::readPNG("images/N3-1.png")
+grid.raster(N3)
 ```
 
-<footer class="source2">Microscopy by...</footer>
+<footer class="source2">H&eacute;l&egrave;ne Adam and Israr Ud Din</footer>
 
-## Laser microdissection (LMD) 2 {.center .flexbox .vcenter}
+## Meristem transitions {.centered .vcenter}
+
+```{r n4}
+N4 <- png::readPNG("images/N4-1.png")
+grid.raster(N4)
+```
+
+<footer class="source2">H&eacute;l&egrave;ne Adam and Israr Ud Din</footer>
+
+## Meristem transitions {.centered .vcenter}
+
+```{r han2}
+myimg <- png::readPNG("images/han2.png")
+grid.raster(myimg, vp = viewport(layout.pos.col = 1, layout.pos.row = 1))
+```
+
+<footer class="source2">Han <em>et al</em>., 2014. <a href="http://journal.frontiersin.org/article/10.3389/fpls.2014.00669/abstract">10.3389/fpls.2014.00669</a></footer>
+
+## Gene expression specifies meristem activity | *G1-LIKE 5* (*TAWAWA1*) supresses SM identity {.centered .vcenter}
+
+```{r tawawa1, fig.height = 4}
+myimg <- png::readPNG("images/taw1.png")
+grid.raster(myimg, vp = viewport(layout.pos.col = 1, layout.pos.row = 1))
+```
+
+<footer class="source2">Yoshida <em>et al</em>., 2013. <a href="http://www.pnas.org/content/110/2/767.full">10.1073/pnas.1216151110</a></footer>
+
+## Gene expression specifies meristem activity | *G1-LIKE 5* (*TAWAWA1*) supresses SM identity {.centered .vcenter}
+
+```{r tawawa2, fig.height = 4}
+myimg <- png::readPNG("images/taw2.png")
+grid.raster(myimg, vp = viewport(layout.pos.col = 1, layout.pos.row = 1))
+```
+
+<footer class="source2">Yoshida <em>et al</em>., 2013. <a href="http://www.pnas.org/content/110/2/767.full">10.1073/pnas.1216151110</a></footer>
+
+## Gene expression specifies meristem activity | *LONELY GUY 1* (*LOG1*) maintains meristem activity {.centered .vcenter}
+
+```{r log1, fig.height = 4}
+myimg <- png::readPNG("images/log1.png")
+grid.raster(myimg, vp = viewport(layout.pos.col = 1, layout.pos.row = 1))
+```
+
+<footer class="source2">Kurakawa <em>et al</em>., 2007 <a href="http://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi?dbfrom=pubmed&id=17287810&retmode=ref&cmd=prlinks">10.1038/nature05504</a></footer>
+
+## Gene expression specifies meristem activity | *LONELY GUY 1* (*LOG1*) maintains meristem activity {.centered .vcenter}
+
+```{r log2, fig.height = 4}
+myimg <- png::readPNG("images/log2.png")
+grid.raster(myimg, vp = viewport(layout.pos.col = 1, layout.pos.row = 1))
+```
+
+<footer class="source2">Kurakawa <em>et al</em>., 2007 <a href="http://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi?dbfrom=pubmed&id=17287810&retmode=ref&cmd=prlinks">10.1038/nature05504</a></footer>
+
+## Gene interactions are complex | Development of floral organs {.centered .vcenter}
+
+```{r pj1, fig.height = 4}
+myimg <- png::readPNG("images/pj1.png")
+grid.raster(myimg, vp = viewport(layout.pos.col = 1, layout.pos.row = 1))
+```
+
+<footer class="source2">Prunet and Jack, 2013; <a href="http://www.pnas.org/content/110/2/767.full">10.1007/978-1-4614-9408-9_1</a>. Hirano <em>et al</em>., 2013; <a href="http://link.springer.com/10.1007/978-1-4614-9408-9_3">10.1007/978-1-4614-9408-9_3</a>.</footer>
+
+## Gene interactions are complex | Development of floral organs {.centered .vcenter}
+
+```{r pj2, fig.height = 4}
+myimg <- png::readPNG("images/pj2.png")
+grid.raster(myimg, vp = viewport(layout.pos.col = 1, layout.pos.row = 1))
+```
+
+<footer class="source2">Prunet and Jack, 2013; <a href="http://www.pnas.org/content/110/2/767.full">10.1007/978-1-4614-9408-9_1</a>. Hirano <em>et al</em>., 2013; <a href="http://link.springer.com/10.1007/978-1-4614-9408-9_3">10.1007/978-1-4614-9408-9_3</a>.</footer>
+
+## Gene interactions are complex | Development of floral organs {.centered .vcenter}
+
+```{r riceabce, fig.height = 4}
+myimg <- png::readPNG("images/riceabc.png")
+grid.raster(myimg, vp = viewport(layout.pos.col = 1, layout.pos.row = 1))
+```
+
+<footer class="source2">Prunet and Jack, 2013; <a href="http://www.pnas.org/content/110/2/767.full">10.1007/978-1-4614-9408-9_1</a>. Hirano <em>et al</em>., 2013; <a href="http://link.springer.com/10.1007/978-1-4614-9408-9_3">10.1007/978-1-4614-9408-9_3</a>.</footer>
+
+## Laser microdissection (LMD) {.centered .flexbox .vcenter}
 
 ```{r lmd2}
 img <- png::readPNG("images/lmdFigure.png")
 grid::grid.raster(img)
 ```
 
-<footer class="source2">Microscopy by...</footer>
+<footer class="source2">Israr Ud Din & H&eacute;l&egrave;ne Adam</footer>
 
-## Laser microdissection (LMD) 3 {.center .flexbox .vcenter}
+## "Whole genome" RNA sequencing
 
-<div style="width:700px; height=900px">
-![lmdFigure.png]("images/lmdFigure.png")
-</div>
+```{r rnaseq1}
+myimg <- png::readPNG("images/rnaseq.png")
+grid.raster(myimg)
+```
 
-<footer class="source2">Microscopy</footer>
+<footer class="source2">Wang <em>et al</em>., 2009. <a href="http://www.nature.com/nrg/journal/v10/n1/full/nrg2484.html">10.1038/nrg2484</a></footer>
+
+## Quantifying gene expression | "Raw" counts {.centered .vcenter}
+
+```{r counts, results='asis'}
+dds <- readRDS('output/DESeq2/ddsLrt.Rds')
+counts <- BiocGenerics::counts(dds)
+pander::pandoc.table(head(counts, 5), round = 1, split.tables = Inf, emphasize.rownames = TRUE)
+```
+
+## Quantifying gene expression | Normalised expression values (TPM) {.centered .vcenter}
+
+```{r tpm, results='asis'}
+rn <- rownames(head(counts, 5))
+pr <- tpm[rn]
+pr <- data.frame(pr, row.names = 1)
+pander::pandoc.table(pr, round = 1, split.tables = Inf)
+```
+
+## `r format(nGenes, big.mark = ",")` genes detected in the panicle {.centered .flexbox .vcenter}
+
+```{r venn}
+grid.draw(venn)
+```
+
+## Dynamics of expression during development | Differential expression analysis {.centered .flexbox .vcenter}
+
+```{r lrt, results = "asis"}
+ddsLrt <- readRDS('output/DESeq2/ddsLrt.Rds')
+res <- as.data.table(data.frame(DESeq2::results(ddsLrt)), keep.rownames = TRUE)
+setorder(res, 'padj', na.last = TRUE)
+setnames(res, c('rn', 'padj'), c('Gene ID', '*p*~adj~'))
+pr <- res[(1:5),.(`Gene ID`, `*p*~adj~`)]
+pander::pandoc.table(pr, emphasize.cols = c(1))
+```
+
+## Dynamics of expression during development | Hierarchical clustering
+
+```{r clustfig, fig.height=4}
+print(clustfig)
+```
 
 ## Coexpression of related genes {.centered .vcenter}
 
@@ -112,33 +232,85 @@ grid::grid.raster(img)
 print(mfuzz)
 ```
 
-## Coexpression of TFs | **Just one or two interesting ones**
+## Coexpression of TFs {.centered .vcenter}
 
-```{r hyperg}
+```{r hyperg, results = "asis"}
 keep <- grep("\\*n\\*", names(t_hypergeom), value = TRUE)
 hyperg <- t_hypergeom[, keep]
 setnames(hyperg, names(hyperg), gsub("[[:space:]]\\*n\\*", "", names(hyperg)))
-knitr::kable(hyperg)
+pander::pandoc.table(hyperg[c("HB", "SBP"),], split.tables = Inf)
 ```
 
-## Expression of TF genes {.centered}
+##  SQUAMOSA promoter binding protein-like genes | (*SBP*s/*SPL*s)
+
+```{r spls, fig.height = 4}
+spls <- rownames(oryzr::SearchByGeneSymbol(c("WFP", "SPL3", "SPL12", "SPL17")))
+splpd <- tpm[spls]
+splpd[, symbol := oryzr::LocToGeneName(rn)$symbols, by = rn]
+splpd[, rn := NULL]
+splpd.melt <- reshape2::melt(splpd, id.vars = "symbol", variable.name = "lib", value.name = "tpm")
+splpd.melt[, stage := substr(lib, start = 1, stop = 2)]
+old <- c("n1", "n2", "n3", "n4")
+new <- c("RM", "PBM", "ePBM/\nSBM", "SM")
+splpd.melt[, stage := factor(plyr::mapvalues(stage, from = old, to = new), levels = new)]
+
+ggplot(splpd.melt, aes(x = stage, y = tpm, group = symbol)) +
+  theme_slide + xlab(NULL) + ylab("Expression (TPM)") +
+  theme(strip.text = element_text(face = "italic")) +
+  stat_smooth(se = FALSE) +
+  geom_point() +
+  facet_wrap("symbol", scales = "free_y")
+```
+
+## Expression of TF genes {.centered .vcenter}
 
 ```{r f_gsea}
 print(f_gsea)
 ```
 
+## Homeobox genes
+
+```{r hb}
+print(f_hb)
+```
+
+##  Class IV HD-ZIPs {.centered .vcenter}
+
+```{r hdzip}
+hdzip <- c(rownames(oryzr::SearchByGeneSymbol(c("ROC1", "ROC3", "ROC5"))), "LOC_Os09g35760", "LOC_Os08g04190")
+hdpd <- tpm[hdzip]
+hdpd[, symbol := oryzr::LocToGeneName(rn)$symbols, by = rn]
+hdpd[is.na(symbol), symbol := rn, by = rn]
+hdpd[, rn := NULL]
+hdpd.melt <- reshape2::melt(hdpd, id.vars = "symbol", variable.name = "lib", value.name = "tpm")
+hdpd.melt[, stage := substr(lib, start = 1, stop = 2)]
+old <- c("n1", "n2", "n3", "n4")
+new <- c("RM", "PBM", "ePBM/\nSBM", "SM")
+hdpd.melt[, stage := factor(plyr::mapvalues(stage, from = old, to = new), levels = new)]
+
+ggplot(hdpd.melt, aes(x = stage, y = tpm, group = symbol)) +
+  theme_slide + xlab(NULL) + ylab("Expression (TPM)") +
+  theme(strip.text = element_text(face = "italic")) +
+  stat_smooth(se = FALSE) +
+  geom_point() +
+  facet_wrap("symbol", scales = "free_y")
+```
+
+## Construction of gene regulatory network
 
 ## R Markdown
+
+* Widescreen (1100 x 700)
+    * Figure size (in inches): 9.16 x 4.5
+    * Figure size (in pixels): 1758 x 864
+* Normal (900 x 700)
+    * Figure size (in inches): 7.5 x 4.5
+    * Figure size (in pixels): ???? x 864
+* Subtitle takes up 120 pixels (~0.5 inches)
 
 This is an R Markdown presentation. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
 When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document^[what happens to footnotes in slides?].
-
-## Slide with Bullets
-
-- Bullet 1
-- Bullet 2
-- Bullet 3
 
 ## Slide with R Code and Output
 
@@ -159,13 +331,42 @@ ggplot(df, aes(x = x, y = y, colour = lab)) +
 
 <footer class="source2">Data: Bob Log III</footer>
 
-# Time for some maths | formula coming up
+## Panicle morphology and gene expression {.flexbox .centered .vcenter}
 
-## Slide with maths
+```{r morph2}
+myimg <- png::readPNG("images/N1.png")
+myplot <- ggplot2::qplot(rnorm(100))
 
-$\frac{1}{x}$
+# set viewport
+grid.newpage()
+pushViewport(grid::viewport(layout = grid::grid.layout(2, 2)))
 
-# | Acknowledgements
+# print
+print(myplot, vp = viewport(layout.pos.col = 1, layout.pos.row = 1))
+grid.raster(myimg, vp = viewport(layout.pos.col = 1, layout.pos.row = 2))
+print(myplot, vp = viewport(layout.pos.col = 2, layout.pos.row = 2))
+grid.raster(myimg, vp = viewport(layout.pos.col = 2, layout.pos.row = 1))
+```
 
-* a name (what they did)
-* another name (more experiments)
+<footer class="source2">H&eacute;l&egrave;ne Adam</footer>
+
+## Summary
+
+* Description of gene expression during the early stages of rice panicle development
+* Switch in expression between apical and axillary meristems
+* Gradual changes during transition of axillary meristem identity
+* Involvement of transcription factors (characterised & uncharacterised)
+
+## Ongoing work
+
+* Hormone signalling in developing panicles
+* Formalise the gene regulatory network controlling meristem identity transitions
+* Evolution of the network
+    * *e.g.* Asian and African rice domestication
+
+</article></slide><slide class='' style="background-image: url(images/p2r.png); background-size: cover; background-position: center"><hgroup class = 'auto-fadein'><h2>Thanks</h2></hgroup><article  id="boffs" class="smaller auto-fadein"><ul>
+<li>Stefan Jouannic & LMI RICE team</li>
+<li>Hélène Adam, IRD (direction, sample collection & preparation)</li>
+<li>Martin Kater, UNIMI</li>
+<li>Israr Ud Din, UNIMI (dissections, RNA preps)</li>
+<li>Veronica Gregis, UNIMI</li></ul><footer class="source2"><a href="mailto:thomas.harrop@ird.fr">thomas.harrop@ird.fr</a></footer></article><article>

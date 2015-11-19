@@ -52,6 +52,35 @@ ptypes2 <- ggplot(pd2, aes(x = TA_nb, y = Sp_nb)) +
   geom_smooth(method = lm, se = FALSE, colour = "black", size = 0.5) +
   ylab("Number of spikelets") + xlab("Number of secondary branches")
 
+############
+### VENN ###
+############
+
+expGenTT.wide <- as.data.table(readRDS('output/expressedGenes/expGenTT.Rds'))
+expGenTT <- reshape2::melt(expGenTT.wide, id.vars = "id",
+                           variable.name = "library", value.name = "exp")
+expGenTT[, stage := substr(library, 1, 2)]
+expGenTT[, stage := plyr::mapvalues(stage, c("n1", "n2", "n3", "n4"),
+                           c("RM", "PBM", "ePBM/SBM", "SM"))]
+expGenTT[, call := sum(exp) > 1, by = .(id, stage)]
+nGenes <- expGenTT[call == TRUE, length(unique(id))]
+cols <- RColorBrewer::brewer.pal(4, 'Set1')
+venn <- VennDiagram::venn.diagram(list(
+"RM" = expGenTT[stage == "RM" & call == TRUE, unique(id)], 
+"SM" = expGenTT[stage == "SM" & call == TRUE, unique(id)],
+"PBM" = expGenTT[stage == "PBM" & call == TRUE, unique(id)],
+"ePBM/SBM" = expGenTT[stage == "ePBM/SBM" & call == TRUE, unique(id)]),
+filename = NULL,
+fill = cols,
+lty = "solid",
+lwd = 1,
+cex = 1,
+cat.cex = 1,
+fontfamily = 'Lato',
+cat.fontfamily = 'Lato',
+alpha = 0.5,
+margin = 0.01)
+
 
 #############
 ### Mfuzz ###
@@ -148,6 +177,17 @@ mfuzz <- ggplot(plotData,
   geom_line(data = centres, mapping = aes(group = 1), colour = "black", alpha = 0.5) +
   facet_wrap("label", ncol = 4)
 
+subSamp <- exprs[sample(1:dim(exprs)[1], size = 0.1 * dim(exprs), replace = F),]
+exprs.melt <- reshape2::melt(subSamp, id.vars = 'id', variable.name = "Stage", value.name = "Scaled, transformed read counts")
+exprs.melt[, Stage := plyr::mapvalues(Stage, "ePBM.SBM", "ePBM/SBM")]
+clustfig <- ggplot(exprs.melt, aes(x = Stage, y = `Scaled, transformed read counts`, group = id)) +
+  theme_slide +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
+  xlab(NULL) +
+  geom_line(alpha = 0.5, colour = "#377EB8") +
+  geom_point(alpha = 0.5, colour = "#E41A1C") 
+
+
 #################
 ### HYPERGEOM ###
 #################
@@ -192,7 +232,8 @@ heatscale <- rev(RColorBrewer::brewer.pal(6, "RdBu"))
 f_gsea <- ggplot(gsea, aes(x = Stage, y = rn, label = padj, fill = `Test\nstatistic`)) +
   xlab(NULL) + ylab(NULL) +
   theme_slide +
-  theme(axis.text.x = element_text(vjust = 0.5)) +
+  theme(axis.text.x = element_text(vjust = 0.5),
+        axis.text.y = element_text(size = 10)) +
   scale_y_discrete(expand = c(0,0)) +
   scale_x_discrete(expand = c(0,0)) +
   scale_fill_gradientn(colours = heatscale) +
@@ -375,18 +416,20 @@ sf_madsTree <- ggtree::annotation_clade(sf_madsTree, node = 211, "GGM13-like",
 ################
 
 plotData.long <- readRDS("output/homeobox/plotData.long.Rds")
+plotData.long[, symbol := plyr::mapvalues(symbol, levels(symbol), gsub("\\n.*", "", levels(symbol)))]
 segData <- readRDS("output/homeobox/segData.Rds")
+plotData.long[,Stage := plyr::mapvalues(Stage, "ePBM/SBM", "ePBM\n/SBM")]
 
 library(ggplot2)
 heatscale <- RColorBrewer::brewer.pal(6, "YlOrRd")
 
 f_hb <- ggplot() +
-  theme_minimal(base_size = 8, base_family = "Helvetica") +
+  theme_slide +
   theme(
+    axis.ticks.length = grid::unit(0, "mm"),
     legend.key.size = grid::unit(8, "points"),
-    legend.text	= element_text(size = 5.5),
-    axis.text.x = element_text(vjust = 0.5, hjust = 1, angle = 90),
-    axis.text.y = element_text(face = "italic", size = 5.5),
+#    legend.text	= element_text(size = 5.5),
+    axis.text.y = element_text(face = "italic", size = 8),
     #legend.title = element_text(size = 6),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank()) +
@@ -395,7 +438,9 @@ f_hb <- ggplot() +
   scale_x_discrete(expand = c(0,0)) +
   geom_raster(aes(x = Stage, y = symbol, fill = `Scaled reads`),
               data = plotData.long) +
-  scale_fill_gradientn(colours = heatscale) +
-  geom_segment(aes(x = 0.255, y = y, xend = 0.255, yend = yend, colour = class),
+  scale_fill_gradientn(colours = heatscale, breaks = c(-1,0,1)) +
+  geom_segment(aes(x = 0.5, y = y, xend = 0.5, yend = yend, colour = class),
                data = segData, size = 5) +
   scale_colour_brewer(palette = "Set3", guide = guide_legend(title = NULL))
+
+

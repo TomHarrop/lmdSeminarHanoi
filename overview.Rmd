@@ -18,6 +18,8 @@ bibliography: /home/tom/Dropbox/temp/PapersLib-2015-11-04.bibtex
 
 ```{r setup, include=FALSE, results="hide"}
 library(ggplot2)
+library(data.table)
+library(grid)
 theme_slide <- theme_minimal() +
   theme(plot.background = element_rect(fill = "transparent", colour = NA))
 knitr::opts_chunk$set(
@@ -25,30 +27,94 @@ knitr::opts_chunk$set(
   echo = FALSE,
   tidy.opts = list(width.cutoff = 32)
   )
+knitr::knit_hooks$set(plot = knitr::hook_plot_tex)
+source("src/figures.R")
 ```
 
 # Introduction
 
-* Relationship between rice yield and branching complexity
-* Relationship between meristem activity / determinancy and branching complexity
-* Relationship between gene expression and meristem identity
-* Why is control of morphology complex (redundancy, dynamics)? An example to illustrate this.
-* **Figure**: panicle morphology during development
-\begin{marginfigure}
-  \includegraphics{morphology.png}
-\end {marginfigure}
+## EvoRepRice
 
-# Background
+* Evolution and adaptation of reproduction in African and Asian rice
+* WP1: Cellular and molecular events related to panicle diversity and ovule development
+* WP2: Identification of major genomic regions contributing to branching differences (Asian and African domesticated species)
+* WP3: Identification of key regulators of panicle development
+* WP4: Contribution of S1 genes to post-zygotic reproductive barrier between *O. sativa* and *O. glaberrima*
+* WP5: Phenotypic and genetic diversity in panicle branching in Asian and African varieties
 
-* LMD and RNAseq methodology
-    * why LMD was chosen
-    * how RNAseq works
-    * problems with small amounts of starting material
+## Talk overview
 
-# Results figures^[How to source `figures.R` and resize without all the data?]
+## Diversity of panicle architecture
 
-* LMD figure
-    * amount of RNA produced
+* Rice panice:
+    * Main axis (rachis)
+    * A number of primary and secondary branches that carry spikelets
+    * Different panicle morphologies between and within species with different branching complexities and grain yields
+    
+## Yield is related to branching complexity
+
+* Phenotyping of panicles from different accessions of domesticated and wild African and Asian rice
+* Correlation between number of secondary branches and number of spikelets
+* Number of secondary branches --> complexity
+* Number of spikelets --> yield
+
+## Meristem transitions
+
+* Complexity of branching is specified at v. early stages of development
+* During this process the activity of different meristem types affects the amount of branching
+* Transverse sections of early panicles in *O. sativa* ssp. *japonica* cv. Nipponbare
+* N1: Rachis meristem after transition to the reproductive stage (inflorescence meristem)
+* N2: Differentiation of primary branch meristems in spiral pattern around main axis
+* N3: After formation of all PBs they elongate but the apex retains meristem activity and can produce secondary branches and spikelets
+    * At this stage it's not possible to distinguish SBM and SM
+* N4: eventually the PBMs and SBMs are converted to SM to form terminal spikelets
+    * At this point branching complexity is fixed and elongation and floral organ differentiation occurs
+* Han overview
+    * Timing of SM specification seems to be controlled and is related to branching complexity (delay in SM specification --> more time for branching) 
+
+## Gene expression specifies meristem activity
+
+* *TAWAWA1*
+    * ALOG (Arabidopsis *LSH* and Oryza *G1*): Small family of transcriptional activators
+    * In o/e of *TAW1* BM activity is enhanced and SM specification is delayed, resulting in a prolonged branch formation stage and an inflorescence with more branches
+    * overexpression has more secondary branches -> *TAWAWA1* suppresses SM identity
+* *LOG1*
+    * LONELY GUY (LOG) encodes a cytokinin-activating enzyme
+    * absence of LOG results in early termination of IM and BMs, which reduces branching complexity
+
+## Gene interactions are complex 
+
+* ABCs in *Arabidopsis*: specification of floral organ identity
+    * Original model: A alone specifies sepals, A+B specifies petals, B+C specifies stamens, and C alone specifies carpels
+    * Became clear that other genes are involved in these processes, the expression patterns are not clearly defined, and the genes interact to affect each other's expression
+* ABCs in rice:
+    * ABC model may be applicable to grass flowers
+    * Because of complexity and redudancy of interactions it becomes difficult to understand by looking at individual genes or interactions
+* A genome-wide approach may be helpful to study meristem transitions
+    * Gain a formal understanding of the interactions within larger "regulatory modules"   
+
+# Results
+
+## Laser Microdissection
+
+* Start by describing gene expression in different meristem types
+* Technique to capture very small amounts of material for analysis
+* Dissected four meristem types: RM, PBM, ePBM and SBM, SM
+* Three biological replicates
+* Able to harvest 2 - 80 ng of RNA for each replicate
+* Amplified RNA for use in sequencing
+
+## Whole genome RNA seq
+
+* mRNA is selected (e.g. by polyA) and reverse-transcribed into cDNA
+* cDNA is broken into smaller fragments and adaptors are ligated
+* adaptors contain a primer binding site which allows the sequencing instrument to read a short length of the cDNA fragment (50 bp)
+* End up with a library of short reads produced from the cDNA fragments
+* The number of reads originating from a gene is proportional to the amount of mRNA from that gene in the original sample, i.e. its expression level
+* To quantify the number of reads coming from each gene, the library of reads is aligned to the reference genome and the number of reads overlapping each gene is counted
+
+## Quantifying gene expression
+
 * clusters?
 * transcription factor examples
     * ALOG family
@@ -56,12 +122,6 @@ knitr::opts_chunk$set(
 * hormone example(s)?
     * cytokinin
 
-\begin{marginfigure}
-  \includegraphics{lmdFigure.pdf}
-\end {marginfigure}
-\begin{marginfigure}
-  \includegraphics{/media/tom/cfd04a45-d8e3-4944-a080-6cfef1543df8/home/tom/Documents/writing/lmdPaper/figures/f_mfuzzClusters-1.pdf}
-\end {marginfigure}
 
 # Discussion
 
