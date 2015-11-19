@@ -44,6 +44,11 @@ source("src/figures.R")
 
 ## Talk overview
 
+* Aim of this part of the project is to understand how changes in gene expression specify different meristem types during panicle development
+* Studied in species with the best reference annotation
+* Found patterns of TF gene expression (and other genes) that suggest involvement in apical vs. axillary meristem identity and specification of determinancy in axillary meristems
+* Aim to formalise the network that specifies meristem identity so that we can study how the network has changed during domestication of African and Asian varieties
+
 ## Diversity of panicle architecture
 
 * Rice panice:
@@ -115,32 +120,65 @@ source("src/figures.R")
 
 ## Quantifying gene expression
 
-* clusters?
-* transcription factor examples
-    * ALOG family
-    * HB?
-* hormone example(s)?
-    * cytokinin
+* result is a large table containing the number of reads that aligned to each gene in the genome
+* the number of reads may be normalised to take into account the differences in length of each gene and the differences between the sequencing depth for each library
+* the normalised value can be used to represent the expression of each gene
+* a cutoff can be set *e.g.* to determine the number of genes expressed in each sample
 
+## Dynamics of gene expression
 
-# Discussion
+* One method is to do a differential expression analysis where a statistical test gives you a *p*-value for each gene
+* Hierarchical clustering can be more interesting because it reveals clusters of coexpressed genes
+* What are the common patterns of expression in the meristem types
 
-* modes of expression in meristems:
-    * apical vs. axillary
-    * transitions in axillary meristems
-* characteristics of the different cell types?
-* dynamical networks of genes controlling expression (how this specifies the cell types)
-* variety in panicle phenotypes in different accessions
-* how did the network 
+## Coexpression of related genes
 
-# Code in tufte-handout
-```{r plot1, echo = TRUE, fig.margin = TRUE}
-df <- data.frame(x = rnorm(10), y = rnorm(10), lab = rep(c("bof1", "bof2"),
-                                                         each = 5))
-ggplot(df, aes(x = x, y = y, colour = lab)) +
-  theme_slide +
-  geom_point() +
-  scale_color_brewer(palette = "Set1")
-```
+* 1 & 4: genes that increase or decrease in expression steadily during development 
+* 7 & 5: genes that change expression between the apical meristem (RM) and axillary meristem (PBM–SM) samples
+* 6 & 2: genes that change expression gradually over the course of changes in axillary meristem identity
+* 3 & 8: weaker clusters containing fewer genes, which had complex expression patterns involving changes in expression particular to the PBM
+* co-expression of genes that are involved in inflorescence development along with other uncharacterized TF genes indicates that the clusters capture biologically meaningful groups of genes
+* genes involved in hormone signalling and TFs
 
-# References
+## Coexpression of TFs
+
+* Clusters also enriched for several TF families
+
+## SPL genes
+
+* *WEALTHY FARMER’S PANICLE* overexpression associated with increased branching and grain yield
+* Other SBPs in a pattern that suggests involvement determinate/indeterminate meristem specification
+
+## Expression of TF genes
+
+* Gene set enrichment analysis
+* for comparing the **strength** of expression between sets of genes 
+* Notable enrichment of SPL in the PBM and depletion in the SM -> indeterminate identity
+* several TF families change in expression between apical and axillary meristems
+* overall, homeoboxes are more strongly expressed in the SM -> could be involved in SM identity
+
+## Homeobox genes
+
+* pattern of expression of individual homeobox genes, colours relate to clades
+* large group of HBs have their strongest expression in SM, no particular clade pattern
+* large group of HBs are lowest expressed in the RM (apical), here there seems to be an overrepresentation of Class IV HD-Zip genes
+
+## Class IV HD-ZIPs
+
+* 5 of the 8 expressed Class IV HD-ZIP genes are expressed in this pattern
+* Could be involved in identity of apical vs axillary meristems
+
+## Summary
+
+* results are a preliminary step to understanding the control of transistions in meristem identity
+* clear switch b/w apical and axillary meristems involving several TF families 
+* identified other families that may be involved in the specification of determinate/indeterminate axillary meristem identity
+* Also identified dynamically expressed genes related to hormone signalling
+
+## Future work
+
+* Hormone and metabolite measurement in meristems or panicles
+* Produce a formal model of how the genes in the "regulatory module" interact to specify meristem types
+* One goal is to understand how this network has evolved during different and evolution of African and Asian rice species
+    * having a formal model will allow changes in these species to be understood
+

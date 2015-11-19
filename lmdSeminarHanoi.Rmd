@@ -41,7 +41,9 @@ grid.raster(myimg)
 
 * Understand how changes in gene expression specify different meristem types
 * Laser microdissection and RNA sequencing in *O. sativa* ssp. *japonica* cv. Nipponbare 
-*
+    * Transcription factor genes have interesting 'modes' of expression
+* Can we find 'regulatory modules' that specify meristem identity?
+* How have these modules been affected during domestication of African and Asian rice?
 
 ## Diversity of panicle architecture
 
@@ -209,15 +211,18 @@ pander::pandoc.table(pr, round = 1, split.tables = Inf)
 grid.draw(venn)
 ```
 
-## Dynamics of expression during development | Differential expression analysis {.centered .flexbox .vcenter}
+## Dynamics of expression during development {.centered .flexbox .vcenter}
+
+Differential expression analysis 
 
 ```{r lrt, results = "asis"}
 ddsLrt <- readRDS('output/DESeq2/ddsLrt.Rds')
 res <- as.data.table(data.frame(DESeq2::results(ddsLrt)), keep.rownames = TRUE)
 setorder(res, 'padj', na.last = TRUE)
+res[1:100, Name := oryzr::LocToGeneName(rn)$symbols, by = rn]
 setnames(res, c('rn', 'padj'), c('Gene ID', '*p*~adj~'))
-pr <- res[(1:5),.(`Gene ID`, `*p*~adj~`)]
-pander::pandoc.table(pr, emphasize.cols = c(1))
+pr <- res[!is.na(Name)][c(1:5), .(`Gene ID`, Name, `*p*~adj~`)]
+pander::pandoc.table(pr, emphasize.cols = c(1, 2))
 ```
 
 ## Dynamics of expression during development | Hierarchical clustering
@@ -296,70 +301,17 @@ ggplot(hdpd.melt, aes(x = stage, y = tpm, group = symbol)) +
   facet_wrap("symbol", scales = "free_y")
 ```
 
-## Construction of gene regulatory network
-
-## R Markdown
-
-* Widescreen (1100 x 700)
-    * Figure size (in inches): 9.16 x 4.5
-    * Figure size (in pixels): 1758 x 864
-* Normal (900 x 700)
-    * Figure size (in inches): 7.5 x 4.5
-    * Figure size (in pixels): ???? x 864
-* Subtitle takes up 120 pixels (~0.5 inches)
-
-This is an R Markdown presentation. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document^[what happens to footnotes in slides?].
-
-## Slide with R Code and Output
-
-```{r table1, echo=TRUE}
-knitr::kable(summary(cars), row.names = FALSE)
-```
-
-## Slide with Plot | So results... wow! {.centered}
-
-```{r plot1}
-df <- data.frame(x = rnorm(10), y = rnorm(10), lab = rep(c("bof1", "bof2"),
-                                                         each = 5))
-ggplot(df, aes(x = x, y = y, colour = lab)) +
-  theme_slide +
-  geom_point() +
-  scale_color_brewer(palette = "Set1")
-```
-
-<footer class="source2">Data: Bob Log III</footer>
-
-## Panicle morphology and gene expression {.flexbox .centered .vcenter}
-
-```{r morph2}
-myimg <- png::readPNG("images/N1.png")
-myplot <- ggplot2::qplot(rnorm(100))
-
-# set viewport
-grid.newpage()
-pushViewport(grid::viewport(layout = grid::grid.layout(2, 2)))
-
-# print
-print(myplot, vp = viewport(layout.pos.col = 1, layout.pos.row = 1))
-grid.raster(myimg, vp = viewport(layout.pos.col = 1, layout.pos.row = 2))
-print(myplot, vp = viewport(layout.pos.col = 2, layout.pos.row = 2))
-grid.raster(myimg, vp = viewport(layout.pos.col = 2, layout.pos.row = 1))
-```
-
-<footer class="source2">H&eacute;l&egrave;ne Adam</footer>
-
 ## Summary
 
 * Description of gene expression during the early stages of rice panicle development
 * Switch in expression between apical and axillary meristems
 * Gradual changes during transition of axillary meristem identity
-* Involvement of transcription factors (characterised & uncharacterised)
+* Involvement of transcription factors and hormone-related genes (characterised & uncharacterised)
+* Probable redundancy within and between TF families
 
 ## Ongoing work
 
-* Hormone signalling in developing panicles
+* Hormone measurement in developing panicles
 * Formalise the gene regulatory network controlling meristem identity transitions
 * Evolution of the network
     * *e.g.* Asian and African rice domestication
